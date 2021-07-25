@@ -7,11 +7,32 @@ int	ph_error(char *str)
 	return (1);
 }
 
+int	ph_sleep(int time)
+{
+	struct timeval	start;
+	struct timeval	end;
+	double			st;
+	double			nd;
+
+	if (time < 0)
+		return (-1);
+	gettimeofday(&start, NULL);
+	gettimeofday(&end, NULL);
+	st = ((double)start.tv_sec * 1000) + ((double)start.tv_usec / 1000);
+	nd = ((double)end.tv_sec * 1000) + ((double)end.tv_usec / 1000);
+	while (nd - st < (double)time)
+	{
+		gettimeofday(&end, NULL);
+		nd = ((double)end.tv_sec * 1000) + ((double)end.tv_usec / 1000);
+	}
+	return (0);
+}
+
 long	ph_atoi(char *str)
 {
 	long	out;
 	long	neg;
-	int	count;
+	int		count;
 
 	if (str == NULL)
 		return (-1);

@@ -9,27 +9,28 @@
 # include <pthread.h>
 # include <limits.h>
 
-typedef struct data_s {
-	pthread_mutex_t	mutex;
-	int		pos;
-	int		philo;
-	int		death;
-	int		eat;
-	int		sleep;
-	int		times;
-}	data_t;
+typedef struct s_data {
+	int				fork;
+	int				id;
+	int				philo;
+	int				death;
+	int				eat;
+	int				sleep;
+	int				times;
+}	t_data;
 
 /**
  ** philo.c
  **/
 
-void	create_philo(data_t *data);
+void	create_philo(t_data *data);
 
 /**
  ** ph_utils.c
  **/
 
-int	ph_error(char *str);
+int		ph_error(char *str);
+int		ph_sleep(int time);
 long	ph_atoi(char *str);
 
 #endif

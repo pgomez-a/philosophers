@@ -1,6 +1,6 @@
 #include "philo.h"
 
-static int	store_data(data_t *data, char *argv[])
+static int	store_data(t_data *data, char *argv[])
 {
 	int	num;
 
@@ -24,7 +24,7 @@ static int	store_data(data_t *data, char *argv[])
 	return (0);
 }
 
-void	read_data(data_t *data)
+void	read_data(t_data *data)
 {
 	printf("philo:  %d\n", data->philo);
 	printf("death:  %d\n", data->death);
@@ -35,7 +35,7 @@ void	read_data(data_t *data)
 
 int	main(int argc, char *argv[])
 {
-	data_t	data;
+	t_data	data;
 
 	if (argc != 5 && argc != 6)
 		return (ph_error("Nº argumentos incorrecto"));
