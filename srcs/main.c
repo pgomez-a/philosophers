@@ -1,4 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/07/27 17:06:46 by pablo             #+#    #+#             */
+/*   Updated: 2021/07/27 17:16:13 by pablo            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
+
+/**
+ ** Store the parameters given by the user from argv to t_data struct
+ ** Check for errors in the given parameters
+ **/
 
 static int	store_data(t_data *data, char *argv[])
 {
@@ -24,14 +41,9 @@ static int	store_data(t_data *data, char *argv[])
 	return (0);
 }
 
-void	read_data(t_data *data)
-{
-	printf("philo:  %d\n", data->philo);
-	printf("death:  %d\n", data->death);
-	printf("eat:    %d\n", data->eat);
-	printf("sleep:  %d\n", data->sleep);
-	printf("times:  %d\n", data->times);
-}
+/**
+ ** Main function -> Philosophers
+ **/
 
 int	main(int argc, char *argv[])
 {
@@ -41,6 +53,5 @@ int	main(int argc, char *argv[])
 		return (ph_error("Nº argumentos incorrecto"));
 	if (store_data(&data, argv) != 0)
 		return (ph_error("Argumentos no válidos"));
-	create_philo(&data);
-	return (0);
+	return (create_philo(&data));
 }

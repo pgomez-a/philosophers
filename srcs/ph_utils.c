@@ -1,4 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ph_utils.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/07/27 17:07:28 by pablo             #+#    #+#             */
+/*   Updated: 2021/07/27 17:08:56 by pablo            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
+
+/**
+ ** Output an error message within a return
+ **/
 
 int	ph_error(char *str)
 {
@@ -6,6 +22,25 @@ int	ph_error(char *str)
 	printf("\033[31m%s\033[95m\n", str);
 	return (1);
 }
+
+/**
+ ** Free allocated memory in case of error
+ **/
+
+int	ph_free_error(t_fork **fk, t_philo **ph, pthread_t **th)
+{
+	if (fk != NULL)
+		free(fk);
+	if (ph != NULL)
+		free(ph);
+	if (th != NULL)
+		free(th);
+	return (-1);
+}
+
+/**
+ ** Simulate usleep function with less delay
+ **/
 
 int	ph_sleep(int time)
 {
@@ -27,6 +62,10 @@ int	ph_sleep(int time)
 	}
 	return (0);
 }
+
+/**
+ ** Pass from type char to type int
+ **/
 
 long	ph_atoi(char *str)
 {
