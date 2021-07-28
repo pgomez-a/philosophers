@@ -58,6 +58,16 @@ int		init_threads(t_data *data, pthread_t **thread);
 int		init_philos(t_data *data, t_fork **fork, t_philo **philo);
 
 /**
+ ** action_philo.c
+ **/
+
+void	philo_action(int id, int time, char *action);
+int		check_if_open(t_philo *philo);
+int		check_if_dye(struct timeval *start, struct timeval *end,
+			t_philo *philo);
+int		waiter(t_data *waiter);
+
+/**
  ** ph_utils.c
  **/
 

@@ -12,24 +12,29 @@
 
 #include "philo.h"
 
-void	philo_action(int time, char *action, int id)
+int	close_forks(t_philo *philo)
 {
-	struct timeval	gettime;
-	double			time_stamp;
-
-	gettimeofday(&gettime, NULL);
-	time_stamp = ((double)gettime.tv_sec * 1000)
-		+ ((double)gettime.tv_usec / 1000);
-	printf("%ld %d %s\n", (long)time_stamp, id, action);
-	if (time >= 0)
-		ph_sleep(time);
+	pthread_mutex_lock(&(philo->data->fork[philo->left].mutex));
+	pthread_mutex_lock(&(philo->data->fork[philo->right].mutex));
+	if (check_if_open(philo) == 0)
+	{
+		philo->data->fork[philo->left].mode = 1;
+		philo_action(philo->id, -1, "has taken a fork");
+		philo->data->fork[philo->right].mode = 1;
+		philo_action(philo->id, -1, "has taken a fork");
+		return (0);
+	}
+	pthread_mutex_unlock(&(philo->data->fork[philo->left].mutex));
+	pthread_mutex_unlock(&(philo->data->fork[philo->right].mutex));
+	return (-1);
 }
 
-int	waiter(t_data *waiter)
+void	open_forks(t_philo *philo)
 {
-	while (1)
-		;
-	return (0);
+	philo->data->fork[philo->left].mode = 0;
+	pthread_mutex_unlock(&(philo->data->fork[philo->left].mutex));
+	philo->data->fork[philo->right].mode = 0;
+	pthread_mutex_unlock(&(philo->data->fork[philo->right].mutex));
 }
 
 void	*execute_philo(void *arg)
@@ -37,53 +42,24 @@ void	*execute_philo(void *arg)
 	struct timeval	start;
 	struct timeval	end;
 	t_philo			*philo;
-	double			st;
-	double			nd;
 
 	philo = (t_philo *)arg;
-	printf("id: %d\n", philo->id);
-	//gettimeofday(&start, NULL);
-	/*while (1)
+	gettimeofday(&start, NULL);
+	while (1)
 	{
-		if (philo->data->philo != 1 && philo->data->fork[philo->left].mode == 0 && philo->data->fork[philo->right].mode == 0)
+		if (close_forks(philo) == 0)
 		{
-			if (philo->id % 2 == 0)
-			{
-				philo->data->fork[philo->left].mode = 1;
-				pthread_mutex_lock(&(philo->data->fork[philo->left].mutex));
-				philo_action(-1, "has taken a fork", philo->id);
-				philo->data->fork[philo->right].mode = 1;
-				pthread_mutex_lock(&(philo->data->fork[philo->right].mutex));
-				philo_action(-1, "has taken a fork", philo->id);
-			}
-			else
-			{
-				philo->data->fork[philo->right].mode = 1;
-				pthread_mutex_lock(&(philo->data->fork[philo->right].mutex));
-				philo_action(-1, "has taken a fork", philo->id);
-				philo->data->fork[philo->left].mode = 1;
-				pthread_mutex_lock(&(philo->data->fork[philo->left].mutex));
-				philo_action(-1, "has taken a fork", philo->id);
-			}
 			gettimeofday(&start, NULL);
-			philo_action(philo->data->eat, "is eating", philo->id);
-			philo->data->fork[philo->left].mode = 0;
-			pthread_mutex_unlock(&(philo->data->fork[philo->left].mutex));
-			philo->data->fork[philo->right].mode = 0;
-			pthread_mutex_unlock(&(philo->data->fork[philo->right].mutex));
-			philo_action(philo->data->sleep, "is sleeping", philo->id);
-			philo_action(-1, "is thinking", philo->id);
+			philo_action(philo->id, philo->data->eat, "is eating");
+			open_forks(philo);
+			philo_action(philo->id, philo->data->sleep, "is sleeping");
+			philo_action(philo->id, -1, "is thinking");
 		}
 		gettimeofday(&end, NULL);
-		st = ((double)start.tv_sec * 1000) + ((double)start.tv_usec / 1000);
-		nd = ((double)end.tv_sec * 1000) + ((double)end.tv_usec / 1000);
-		if ((long)(nd - st) > (long)philo->data->death)
-		{
-			philo_action(-1, "died", philo->id);
-			exit(-1);
-		}
-	}*/
-	return (0);
+		if (check_if_dye(&start, &end, philo) != 0)
+			exit (0);
+	}
+	return (NULL);
 }
 
 int	create_philo(t_data *data)
