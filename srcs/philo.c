@@ -12,7 +12,11 @@
 
 #include "philo.h"
 
-int	close_forks(double time_stamp, t_philo *philo)
+/**
+ ** Locks two mutex to eat and close them in case one of them is not available
+ **/
+
+static int	close_forks(double time_stamp, t_philo *philo)
 {
 	if (philo->id % 2 == 0)
 	{
@@ -37,13 +41,21 @@ int	close_forks(double time_stamp, t_philo *philo)
 	return (-1);
 }
 
-void	open_forks(t_philo *philo)
+/**
+ ** Unlock two mutex in case a philo has stop eating
+ **/
+
+static void	open_forks(t_philo *philo)
 {
 	philo->data->fork[philo->left].mode = 0;
 	pthread_mutex_unlock(&(philo->data->fork[philo->left].mutex));
 	philo->data->fork[philo->right].mode = 0;
 	pthread_mutex_unlock(&(philo->data->fork[philo->right].mutex));
 }
+
+/**
+ ** Function that a philo executes while waiter manages its values
+ **/
 
 void	*execute_philo(void *arg)
 {
@@ -60,6 +72,9 @@ void	*execute_philo(void *arg)
 	{
 		if (philo->data->philo != 1 && close_forks(time_stamp, philo) == 0)
 		{
+			gettimeofday(&end, NULL);
+			if (check_if_dye(&start, &end, philo) != 0)
+				philo->data->status = 1;
 			gettimeofday(&start, NULL);
 			philo_action(time_stamp, philo->data->eat, "is eating", philo);
 			open_forks(philo);
@@ -72,6 +87,11 @@ void	*execute_philo(void *arg)
 	}
 	return (NULL);
 }
+
+/**
+ ** Init the values of the philos and create them to start eating,
+ ** sleeping and thinking
+ **/
 
 int	create_philo(t_data *data)
 {

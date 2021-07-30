@@ -12,6 +12,11 @@
 
 #include "philo.h"
 
+/**
+ ** Print a message when a philo is going to do an action
+ ** Wait if philo has to sleep or eat
+ **/
+
 void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 {
 	pthread_mutex_t	mutex;
@@ -37,6 +42,10 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 	pthread_mutex_unlock(&mutex);
 }
 
+/**
+ ** Check if the forks are open to eat
+ **/
+
 int	check_if_open(t_philo *philo)
 {
 	if (philo->data->philo == 1)
@@ -47,6 +56,10 @@ int	check_if_open(t_philo *philo)
 		return (-1);
 	return (0);
 }
+
+/**
+ ** Check if a philo has died comparing the two time_stamps
+ **/
 
 int	check_if_dye(struct timeval *start, struct timeval *end, t_philo *philo)
 {
@@ -62,6 +75,10 @@ int	check_if_dye(struct timeval *start, struct timeval *end, t_philo *philo)
 	}
 	return (0);
 }
+
+/**
+ ** Main thread that manages the status of the threads
+ **/
 
 int	waiter(t_data *waiter)
 {
