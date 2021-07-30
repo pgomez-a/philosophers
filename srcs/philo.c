@@ -12,16 +12,24 @@
 
 #include "philo.h"
 
-int	close_forks(t_philo *philo)
+int	close_forks(double time_stamp, t_philo *philo)
 {
-	pthread_mutex_lock(&(philo->data->fork[philo->left].mutex));
-	pthread_mutex_lock(&(philo->data->fork[philo->right].mutex));
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(&(philo->data->fork[philo->left].mutex));
+		pthread_mutex_lock(&(philo->data->fork[philo->right].mutex));
+	}
+	else
+	{
+		pthread_mutex_lock(&(philo->data->fork[philo->right].mutex));
+		pthread_mutex_lock(&(philo->data->fork[philo->left].mutex));
+	}
 	if (check_if_open(philo) == 0)
 	{
 		philo->data->fork[philo->left].mode = 1;
-		philo_action(philo->id, -1, "has taken a fork");
+		philo_action(time_stamp, -1, "has taken a fork", philo);
 		philo->data->fork[philo->right].mode = 1;
-		philo_action(philo->id, -1, "has taken a fork");
+		philo_action(time_stamp, -1, "has taken a fork", philo);
 		return (0);
 	}
 	pthread_mutex_unlock(&(philo->data->fork[philo->left].mutex));
@@ -41,23 +49,26 @@ void	*execute_philo(void *arg)
 {
 	struct timeval	start;
 	struct timeval	end;
+	double			time_stamp;
 	t_philo			*philo;
 
 	philo = (t_philo *)arg;
 	gettimeofday(&start, NULL);
-	while (1)
+	time_stamp = ((double)start.tv_sec * 1000)
+		+ ((double)start.tv_usec / 1000);
+	while (philo->data->waiter == 1)
 	{
-		if (close_forks(philo) == 0)
+		if (philo->data->philo != 1 && close_forks(time_stamp, philo) == 0)
 		{
 			gettimeofday(&start, NULL);
-			philo_action(philo->id, philo->data->eat, "is eating");
+			philo_action(time_stamp, philo->data->eat, "is eating", philo);
 			open_forks(philo);
-			philo_action(philo->id, philo->data->sleep, "is sleeping");
-			philo_action(philo->id, -1, "is thinking");
+			philo_action(time_stamp, philo->data->sleep, "is sleeping", philo);
+			philo_action(time_stamp, -1, "is thinking", philo);
 		}
 		gettimeofday(&end, NULL);
 		if (check_if_dye(&start, &end, philo) != 0)
-			exit (0);
+			philo->data->status = 1;
 	}
 	return (NULL);
 }

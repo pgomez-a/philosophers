@@ -12,17 +12,29 @@
 
 #include "philo.h"
 
-void	philo_action(int id, int time, char *action)
+void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 {
+	pthread_mutex_t	mutex;
 	struct timeval	gettime;
 	double			time_stamp;
 
+	pthread_mutex_init(&mutex, NULL);
+	pthread_mutex_lock(&mutex);
 	gettimeofday(&gettime, NULL);
 	time_stamp = ((double)gettime.tv_sec * 1000)
 		+ ((double)gettime.tv_usec / 1000);
-	printf("%ld %d %s\n", (long)time_stamp, id, action);
-	if (time >= 0)
-		ph_sleep(time);
+	if (philo->data->waiter == 1)
+	{
+		if (ph_strcmp("died", action) == 1)
+			printf("\033[31m%ld %d %s\n\033[39m",
+				(long)(time_stamp - tstamp), philo->id, action);
+		else
+			printf("%ld %d %s\n",
+				(long)(time_stamp - tstamp), philo->id, action);
+		if (time >= 0)
+			ph_sleep(time);
+	}
+	pthread_mutex_unlock(&mutex);
 }
 
 int	check_if_open(t_philo *philo)
@@ -45,7 +57,7 @@ int	check_if_dye(struct timeval *start, struct timeval *end, t_philo *philo)
 	nd = ((double)end->tv_sec * 1000) + ((double)end->tv_usec / 1000);
 	if ((long)(nd - st) > (long)philo->data->death)
 	{
-		philo_action(philo->id, -1, "died");
+		philo_action(st, -1, "died", philo);
 		return (-1);
 	}
 	return (0);
@@ -54,6 +66,13 @@ int	check_if_dye(struct timeval *start, struct timeval *end, t_philo *philo)
 int	waiter(t_data *waiter)
 {
 	while (1)
-		;
+	{
+		if (waiter->status == 1)
+		{
+			waiter->waiter = 0;
+			ph_sleep(2);
+			return (-1);
+		}
+	}
 	return (0);
 }

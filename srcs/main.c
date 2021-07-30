@@ -19,8 +19,6 @@
 
 static int	store_data(t_data *data, char *argv[])
 {
-	int	num;
-
 	if (ph_atoi(argv[1]) < 0 || ph_atoi(argv[1]) > INT_MAX)
 		return (-1);
 	if (ph_atoi(argv[2]) < 0 || ph_atoi(argv[2]) > INT_MAX)
@@ -36,6 +34,8 @@ static int	store_data(t_data *data, char *argv[])
 	data->eat = (int)ph_atoi(argv[3]);
 	data->sleep = (int)ph_atoi(argv[4]);
 	data->times = -1;
+	data->status = 0;
+	data->waiter = 1;
 	if (argv[5] != NULL)
 		data->times = (int)ph_atoi(argv[5]);
 	return (0);

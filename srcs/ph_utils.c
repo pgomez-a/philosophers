@@ -95,3 +95,23 @@ long	ph_atoi(char *str)
 	}
 	return (out * neg);
 }
+
+/**
+ ** Compare if you strings are equal
+ **/
+
+int	ph_strcmp(char *strOne, char *strTwo)
+{
+	int	count;
+
+	count = 0;
+	while (strOne[count] && strTwo[count])
+	{
+		if (strOne[count] != strTwo[count])
+			return (-1);
+		count++;
+	}
+	if (strOne[count] != '\0' || strTwo[count] != '\0')
+		return (-1);
+	return (1);
+}
