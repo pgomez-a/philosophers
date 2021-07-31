@@ -32,16 +32,16 @@ typedef struct s_time {
 }	t_time;
 
 typedef struct s_data {
-	int		id;
-	int		philo;
-	int		death;
-	int		eat;
-	int		sleep;
-	int		times;
-	int		status;
-	int		waiter;
-	t_time	*time;
-	t_fork	*fork;
+	int				id;
+	int				philo;
+	int				death;
+	int				eat;
+	int				sleep;
+	int				times;
+	int				waiter;
+	pthread_mutex_t	mutex;
+	t_time			*time;
+	t_fork			*fork;
 }	t_data;
 
 typedef struct s_philo {
@@ -64,7 +64,8 @@ int		create_philo(t_data *data);
 int		init_forks(t_data *data, t_fork **fork);
 int		init_threads(t_data *data, pthread_t **thread);
 int		init_tstamps(t_data *data, t_time **time);
-int		init_philos(t_data *data, t_fork **fork, t_time **time, t_philo **philo);
+int		init_philos(t_data *data, t_fork **fork,
+			t_time **time, t_philo **philo);
 
 /**
  ** action_philo.c
@@ -72,8 +73,6 @@ int		init_philos(t_data *data, t_fork **fork, t_time **time, t_philo **philo);
 
 void	philo_action(double tstamp, int time, char *action, t_philo *philo);
 int		check_if_open(t_philo *philo);
-int		check_if_dye(struct timeval *start, struct timeval *end,
-			t_philo *philo);
 int		waiter(t_data *data);
 
 /**

@@ -77,10 +77,9 @@ int	init_philos(t_data *data, t_fork **fork, t_time **time, t_philo **philo)
 		(*philo)[count].id = count + 1;
 		(*philo)[count].data = data;
 		(*philo)[count].left = count;
+		(*philo)[count].right = count + 1;
 		if ((*philo)[count].id == data->philo)
 			(*philo)[count].right = 0;
-		else
-			(*philo)[count].right = count + 1;
 		count++;
 	}
 	return (0);

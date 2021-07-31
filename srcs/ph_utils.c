@@ -41,7 +41,8 @@ int	ph_free_error(t_fork **fk, t_philo **ph, t_time **tm, pthread_t **th)
 }
 
 /**
- ** Simulate usleep function with less delay
+ ** Simulate usleep function with less delay using miliseconds
+ ** instead of microseconds
  **/
 
 int	ph_sleep(int time)

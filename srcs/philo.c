@@ -30,6 +30,7 @@ static int	close_forks(double time_stamp, t_philo *philo)
 	}
 	if (check_if_open(philo) == 0)
 	{
+		pthread_mutex_lock(&(philo->data->mutex));
 		philo->data->fork[philo->left].mode = 1;
 		philo_action(time_stamp, -1, "has taken a fork", philo);
 		philo->data->fork[philo->right].mode = 1;
@@ -57,35 +58,35 @@ static void	open_forks(t_philo *philo)
  ** Function that a philo executes while waiter manages its values
  **/
 
-void	*execute_philo(void *arg)
+static void	running_philo(double stamp, struct timeval *start, t_philo *philo)
+{
+	gettimeofday(start, NULL);
+	philo->data->time[philo->id - 1].time = (*start);
+	pthread_mutex_unlock(&(philo->data->mutex));
+	philo_action(stamp, philo->data->eat, "is eating", philo);
+	open_forks(philo);
+	philo_action(stamp, philo->data->sleep, "is sleeping", philo);
+	philo_action(stamp, -1, "is thinking", philo);
+}
+
+static void	*execute_philo(void *arg)
 {
 	struct timeval	start;
 	double			time_stamp;
 	t_philo			*philo;
 
 	philo = (t_philo *)arg;
+	pthread_mutex_lock(&(philo->data->mutex));
 	gettimeofday(&start, NULL);
 	philo->data->time[philo->id - 1].time = start;
+	pthread_mutex_unlock(&(philo->data->mutex));
 	time_stamp = ((double)start.tv_sec * 1000)
 		+ ((double)start.tv_usec / 1000);
 	philo->data->time[philo->id - 1].tstamp = time_stamp;
 	while (philo->data->waiter == 1)
 	{
 		if (philo->data->philo != 1 && close_forks(time_stamp, philo) == 0)
-		{
-			//gettimeofday(&end, NULL);
-			//if (check_if_dye(&start, &end, philo) != 0)
-			//	philo->data->status = 1;
-			gettimeofday(&start, NULL);
-			philo->data->time[philo->id - 1].time = start;
-			philo_action(time_stamp, philo->data->eat, "is eating", philo);
-			open_forks(philo);
-			philo_action(time_stamp, philo->data->sleep, "is sleeping", philo);
-			philo_action(time_stamp, -1, "is thinking", philo);
-		}
-		//gettimeofday(&end, NULL);
-		//if (check_if_dye(&start, &end, philo) != 0)
-		//	philo->data->status = 1;
+			running_philo(time_stamp, &start, philo);
 	}
 	return (NULL);
 }
@@ -103,13 +104,10 @@ int	create_philo(t_data *data)
 	t_fork		*fork;
 	int			count;
 
-	if (init_forks(data, &fork) != 0)
-		return (ph_free_error(&fork, &philo, &time, &thread));
-	if (init_threads(data, &thread) != 0)
-		return (ph_free_error(&fork, &philo, &time, &thread));
-	if (init_tstamps(data, &time) != 0)
-		return (ph_free_error(&fork, &philo, &time, &thread));
-	if (init_philos(data, &fork, &time, &philo) != 0)
+	if (init_forks(data, &fork) != 0
+		|| init_threads(data, &thread) != 0
+		|| init_tstamps(data, &time) != 0
+		|| init_philos(data, &fork, &time, &philo) != 0)
 		return (ph_free_error(&fork, &philo, &time, &thread));
 	count = 0;
 	while (count < data->philo)

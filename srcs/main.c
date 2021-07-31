@@ -34,10 +34,10 @@ static int	store_data(t_data *data, char *argv[])
 	data->eat = (int)ph_atoi(argv[3]);
 	data->sleep = (int)ph_atoi(argv[4]);
 	data->times = -1;
-	data->status = 0;
-	data->waiter = 1;
 	if (argv[5] != NULL)
 		data->times = (int)ph_atoi(argv[5]);
+	data->waiter = 1;
+	pthread_mutex_init(&(data->mutex), NULL);
 	return (0);
 }
 
