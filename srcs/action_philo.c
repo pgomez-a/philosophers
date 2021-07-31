@@ -82,21 +82,36 @@ int	check_if_dye(struct timeval *start, struct timeval *end, t_philo *philo)
 
 int	waiter(t_data *waiter)
 {
-	int	count;
+	struct timeval	start;
+	struct timeval	end;
+	double			st;
+	double			nd;
+	int				count;
 
 	while (1)
 	{
-		if (waiter->status == 1)
+		count = 0;
+		while (count < waiter->philo)
 		{
-			waiter->waiter = 0;
-			ph_sleep(2);
-			count = 0;
-			while (count < waiter->philo)
+			gettimeofday(&end, NULL);
+			start = waiter->time[count].time;
+			st = ((double)start.tv_sec * 1000) + ((double)start.tv_usec / 1000);
+			nd = ((double)end.tv_sec * 1000) + ((double)end.tv_usec / 1000);
+			if (st != 0 && nd - st > waiter->death)
 			{
-				pthread_mutex_destroy(&(waiter->fork[count].mutex));
-				count++;
+				waiter->waiter = 0;
+				printf("\033[31m%ld %d is died\033[39m\n",
+					(long)(nd - waiter->time[count].tstamp), count + 1);
+				ph_sleep(2);
+				count = 0;
+				while (count < waiter->philo)
+				{
+					pthread_mutex_destroy(&(waiter->fork[count].mutex));
+					count++;
+				}
+				return (-1);
 			}
-			return (-1);
+			count++;
 		}
 	}
 	return (0);

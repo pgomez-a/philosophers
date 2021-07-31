@@ -26,6 +26,11 @@ typedef struct s_fork {
 	pthread_mutex_t	mutex;
 }	t_fork;
 
+typedef struct s_time {
+	struct timeval	time;
+	double			tstamp;
+}	t_time;
+
 typedef struct s_data {
 	int		id;
 	int		philo;
@@ -35,6 +40,7 @@ typedef struct s_data {
 	int		times;
 	int		status;
 	int		waiter;
+	t_time	*time;
 	t_fork	*fork;
 }	t_data;
 
@@ -57,7 +63,8 @@ int		create_philo(t_data *data);
 
 int		init_forks(t_data *data, t_fork **fork);
 int		init_threads(t_data *data, pthread_t **thread);
-int		init_philos(t_data *data, t_fork **fork, t_philo **philo);
+int		init_tstamps(t_data *data, t_time **time);
+int		init_philos(t_data *data, t_fork **fork, t_time **time, t_philo **philo);
 
 /**
  ** action_philo.c
@@ -74,7 +81,7 @@ int		waiter(t_data *data);
  **/
 
 int		ph_error(char *str);
-int		ph_free_error(t_fork **fk, t_philo **ph, pthread_t **th);
+int		ph_free_error(t_fork **fk, t_philo **ph, t_time **tm, pthread_t **th);
 int		ph_sleep(int time);
 int		ph_strcmp(char *strOne, char *strTwo);
 long	ph_atoi(char *str);

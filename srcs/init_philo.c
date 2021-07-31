@@ -46,16 +46,30 @@ int	init_threads(t_data *data, pthread_t **thread)
 }
 
 /**
+ ** Allocate memory for monitoring the time so that waiter is able
+ ** to detect and manage a philo dead
+ **/
+
+int	init_tstamps(t_data *data, t_time **time)
+{
+	(*time) = (t_time *)malloc(sizeof(t_time) * data->philo);
+	if (*time == NULL)
+		return (-1);
+	return (0);
+}
+
+/**
  ** Init values of philos before creating them
  **/
 
-int	init_philos(t_data *data, t_fork **fork, t_philo **philo)
+int	init_philos(t_data *data, t_fork **fork, t_time **time, t_philo **philo)
 {
 	int	count;
 
 	(*philo) = (t_philo *)malloc(sizeof(t_philo) * data->philo);
 	if (*philo == NULL)
 		return (-1);
+	data->time = *time;
 	data->fork = *fork;
 	count = 0;
 	while (count < data->philo)

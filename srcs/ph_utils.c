@@ -27,12 +27,14 @@ int	ph_error(char *str)
  ** Free allocated memory in case of error
  **/
 
-int	ph_free_error(t_fork **fk, t_philo **ph, pthread_t **th)
+int	ph_free_error(t_fork **fk, t_philo **ph, t_time **tm, pthread_t **th)
 {
 	if (*fk != NULL)
 		free(*fk);
 	if (*ph != NULL)
 		free(*ph);
+	if (*tm != NULL)
+		free(*tm);
 	if (*th != NULL)
 		free(*th);
 	return (-1);
