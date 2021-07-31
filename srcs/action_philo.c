@@ -82,12 +82,20 @@ int	check_if_dye(struct timeval *start, struct timeval *end, t_philo *philo)
 
 int	waiter(t_data *waiter)
 {
+	int	count;
+
 	while (1)
 	{
 		if (waiter->status == 1)
 		{
 			waiter->waiter = 0;
 			ph_sleep(2);
+			count = 0;
+			while (count < waiter->philo)
+			{
+				pthread_mutex_destroy(&(waiter->fork[count].mutex));
+				count++;
+			}
 			return (-1);
 		}
 	}

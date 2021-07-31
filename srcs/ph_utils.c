@@ -29,12 +29,12 @@ int	ph_error(char *str)
 
 int	ph_free_error(t_fork **fk, t_philo **ph, pthread_t **th)
 {
-	if (fk != NULL)
-		free(fk);
-	if (ph != NULL)
-		free(ph);
-	if (th != NULL)
-		free(th);
+	if (*fk != NULL)
+		free(*fk);
+	if (*ph != NULL)
+		free(*ph);
+	if (*th != NULL)
+		free(*th);
 	return (-1);
 }
 
