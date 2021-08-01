@@ -70,6 +70,7 @@ static int	manage_philo_death(int mode, int count, double nd, t_data *waiter)
 		pthread_mutex_destroy(&(waiter->fork[count].mutex));
 		count++;
 	}
+	pthread_mutex_unlock(&(waiter->mutex));
 	pthread_mutex_destroy(&(waiter->mutex));
 	if (mode == 1)
 		return (1);
@@ -94,9 +95,9 @@ int	waiter(t_data *waiter)
 			pthread_mutex_lock(&(waiter->mutex));
 			start = waiter->time[count].time;
 			st = ((double)start.tv_sec * 1000) + ((double)start.tv_usec / 1000);
-			pthread_mutex_unlock(&(waiter->mutex));
 			if (waiter->time[count].id > 0 && nd - st > waiter->death + 1)
 				return (manage_philo_death(1, count, nd, waiter));
+			pthread_mutex_unlock(&(waiter->mutex));
 			if (waiter->waiter == waiter->philo * -1)
 				return (manage_philo_death(0, count, nd, waiter));
 			count++;
