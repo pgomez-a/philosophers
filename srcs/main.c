@@ -36,7 +36,7 @@ static int	store_data(t_data *data, char *argv[])
 	data->times = -1;
 	if (argv[5] != NULL)
 		data->times = (int)ph_atoi(argv[5]);
-	data->waiter = 1;
+	data->waiter = 0;
 	pthread_mutex_init(&(data->mutex), NULL);
 	return (0);
 }

@@ -74,8 +74,10 @@ static void	*execute_philo(void *arg)
 	struct timeval	start;
 	double			time_stamp;
 	t_philo			*philo;
+	int				times;
 
 	philo = (t_philo *)arg;
+	times = philo->data->times;
 	pthread_mutex_lock(&(philo->data->mutex));
 	gettimeofday(&start, NULL);
 	philo->data->time[philo->id - 1].time = start;
@@ -83,11 +85,13 @@ static void	*execute_philo(void *arg)
 	time_stamp = ((double)start.tv_sec * 1000)
 		+ ((double)start.tv_usec / 1000);
 	philo->data->time[philo->id - 1].tstamp = time_stamp;
-	while (philo->data->waiter == 1)
+	while (philo->data->waiter == 0 && times != 0)
 	{
 		if (philo->data->philo != 1 && close_forks(time_stamp, philo) == 0)
 			running_philo(time_stamp, &start, philo);
+		times--;
 	}
+	philo->data->waiter--;
 	return (NULL);
 }
 

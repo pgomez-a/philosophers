@@ -25,7 +25,7 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 	gettimeofday(&gettime, NULL);
 	time_stamp = ((double)gettime.tv_sec * 1000)
 		+ ((double)gettime.tv_usec / 1000);
-	if (philo->data->waiter == 1)
+	if (philo->data->waiter == 0)
 	{
 		printf("%ld %d %s\n", (long)(time_stamp - tstamp), philo->id, action);
 		if (time >= 0)
@@ -52,7 +52,7 @@ int	check_if_open(t_philo *philo)
 
 static int	manage_philo_death(int count, double nd, t_data *waiter)
 {
-	waiter->waiter = 0;
+	waiter->waiter = 1;
 	printf("\033[31m%ld %d is died\033[39m\n",
 		(long)(nd - waiter->time[count].tstamp), count + 1);
 	ph_sleep(2);
@@ -87,6 +87,8 @@ int	waiter(t_data *waiter)
 			pthread_mutex_unlock(&(waiter->mutex));
 			if (st != 0 && nd - st > waiter->death)
 				return (manage_philo_death(count, nd, waiter));
+			if (waiter->waiter == waiter->philo * -1)
+				return (0);
 			count++;
 		}
 	}
