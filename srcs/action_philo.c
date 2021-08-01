@@ -55,11 +55,14 @@ int	check_if_open(t_philo *philo)
  ** Main thread that manages the status of the threads
  **/
 
-static int	manage_philo_death(int count, double nd, t_data *waiter)
+static int	manage_philo_death(int mode, int count, double nd, t_data *waiter)
 {
-	waiter->waiter = 1;
-	printf("\033[31m%ld %d is died\033[39m\n",
-		(long)(nd - waiter->time[count].tstamp), count + 1);
+	if (mode == 1)
+	{
+		waiter->waiter = 1;
+		printf("\033[31m%ld %d is died\033[39m\n",
+			(long)(nd - waiter->time[count].tstamp), count + 1);
+	}
 	ph_sleep(2);
 	count = 0;
 	while (count < waiter->philo)
@@ -68,7 +71,9 @@ static int	manage_philo_death(int count, double nd, t_data *waiter)
 		count++;
 	}
 	pthread_mutex_destroy(&(waiter->mutex));
-	return (1);
+	if (mode == 1)
+		return (1);
+	return (0);
 }
 
 int	waiter(t_data *waiter)
@@ -90,10 +95,10 @@ int	waiter(t_data *waiter)
 			start = waiter->time[count].time;
 			st = ((double)start.tv_sec * 1000) + ((double)start.tv_usec / 1000);
 			pthread_mutex_unlock(&(waiter->mutex));
-			if (waiter->time[count].id > 0 && st != 0 && nd - st > waiter->death + 1)
-				return (manage_philo_death(count, nd, waiter));
+			if (waiter->time[count].id > 0 && nd - st > waiter->death + 1)
+				return (manage_philo_death(1, count, nd, waiter));
 			if (waiter->waiter == waiter->philo * -1)
-				return (0);
+				return (manage_philo_death(0, count, nd, waiter));
 			count++;
 		}
 	}
