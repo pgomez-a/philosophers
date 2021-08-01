@@ -25,12 +25,14 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 	gettimeofday(&gettime, NULL);
 	time_stamp = ((double)gettime.tv_sec * 1000)
 		+ ((double)gettime.tv_usec / 1000);
-	if (philo->data->waiter == 0)
+	if (philo->data->waiter != 1)
 	{
 		if (ph_strcmp("is eating", action) == 1)
-			printf("\033[32m%ld %d %s\033[39m\n", (long)(time_stamp - tstamp), philo->id, action);
+			printf("\033[32m%ld %d %s\033[39m\n",
+				(long)(time_stamp - tstamp), philo->id, action);
 		else
-			printf("%ld %d %s\n", (long)(time_stamp - tstamp), philo->id, action);
+			printf("%ld %d %s\n",
+				(long)(time_stamp - tstamp), philo->id, action);
 		if (time >= 0)
 			ph_sleep(time);
 	}
@@ -88,7 +90,7 @@ int	waiter(t_data *waiter)
 			start = waiter->time[count].time;
 			st = ((double)start.tv_sec * 1000) + ((double)start.tv_usec / 1000);
 			pthread_mutex_unlock(&(waiter->mutex));
-			if (st != 0 && nd - st > waiter->death)
+			if (waiter->time[count].id > 0 && st != 0 && nd - st > waiter->death + 1)
 				return (manage_philo_death(count, nd, waiter));
 			if (waiter->waiter == waiter->philo * -1)
 				return (0);

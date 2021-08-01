@@ -29,6 +29,7 @@ typedef struct s_fork {
 typedef struct s_time {
 	struct timeval	time;
 	double			tstamp;
+	int				id;
 }	t_time;
 
 typedef struct s_data {

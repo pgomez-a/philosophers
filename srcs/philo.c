@@ -81,16 +81,18 @@ static void	*execute_philo(void *arg)
 	pthread_mutex_lock(&(philo->data->mutex));
 	gettimeofday(&start, NULL);
 	philo->data->time[philo->id - 1].time = start;
+	philo->data->time[philo->id - 1].id = philo->id;
 	pthread_mutex_unlock(&(philo->data->mutex));
 	time_stamp = ((double)start.tv_sec * 1000)
 		+ ((double)start.tv_usec / 1000);
 	philo->data->time[philo->id - 1].tstamp = time_stamp;
-	while (philo->data->waiter == 0 && times != 0)
+	while (philo->data->waiter != 1 && times != 0)
 	{
 		if (philo->data->philo != 1 && close_forks(time_stamp, philo) == 0)
 			running_philo(time_stamp, &start, philo);
 		times--;
 	}
+	philo->data->time[philo->id - 1].id *= -1;
 	philo->data->waiter--;
 	return (NULL);
 }
