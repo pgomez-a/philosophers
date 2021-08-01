@@ -27,7 +27,10 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 		+ ((double)gettime.tv_usec / 1000);
 	if (philo->data->waiter == 0)
 	{
-		printf("%ld %d %s\n", (long)(time_stamp - tstamp), philo->id, action);
+		if (ph_strcmp("is eating", action) == 1)
+			printf("\033[32m%ld %d %s\033[39m\n", (long)(time_stamp - tstamp), philo->id, action);
+		else
+			printf("%ld %d %s\n", (long)(time_stamp - tstamp), philo->id, action);
 		if (time >= 0)
 			ph_sleep(time);
 	}
