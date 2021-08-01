@@ -30,7 +30,6 @@ static int	close_forks(double time_stamp, t_philo *philo)
 	}
 	if (check_if_open(philo) == 0)
 	{
-		pthread_mutex_lock(&(philo->data->mutex));
 		philo->data->fork[philo->left].mode = 1;
 		philo_action(time_stamp, -1, "has taken a fork", philo);
 		philo->data->fork[philo->right].mode = 1;
@@ -60,6 +59,7 @@ static void	open_forks(t_philo *philo)
 
 static void	running_philo(double stamp, struct timeval *start, t_philo *philo)
 {
+	pthread_mutex_lock(&(philo->data->mutex));
 	gettimeofday(start, NULL);
 	philo->data->time[philo->id - 1].time = (*start);
 	pthread_mutex_unlock(&(philo->data->mutex));
