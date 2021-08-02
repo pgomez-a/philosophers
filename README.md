@@ -16,3 +16,6 @@ One of the most important libraries for working with threading and concurrent pr
 
 - <b>Manage threads:</b> create, join and manage the lifespan of a thread.
 - <b>Mutex:</b> synchronizes access to shared data between threads.
+
+### What is a thread?
+
