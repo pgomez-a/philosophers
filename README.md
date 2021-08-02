@@ -25,3 +25,11 @@ Inside this little chip there are different modules that we can call cores. A fe
 
 ### Threads vs Cores
 Threads cannot be confused with the cores of a processor. Threads and multi-cores help programs execute instructions faster, but they are different things. The main difference between them is that we find cores at the hardware level, while threads can only be seen at the software level. **This means that threads do not really exist, while cores are physical processors installed on a single chip**. In order for them to work, threads must share some system resources within the same core, so the data shared between threads will always be stored in the core where the threads are created.
+
+```
+There is a downside to using threads and that is that they can interfere with each other, especially when they have to access shared resources.
+Imagine that the same data is modified by several threads at the same time. This is a very bad situation that can happen if we don't know how to avoid it.
+To solve this, we will learn how to use mutex.
+```
+
+
