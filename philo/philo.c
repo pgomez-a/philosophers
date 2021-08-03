@@ -87,15 +87,16 @@ static void	*execute_philo(void *arg)
 	time_stamp = ((double)start.tv_sec * 1000)
 		+ ((double)start.tv_usec / 1000);
 	philo->data->time[philo->id - 1].tstamp = time_stamp;
-	while (philo->data->waiter != 1 && times != 0)
+	while (philo->data->waiter != 1)
 	{
 		if (philo->data->philo != 1 && close_forks(time_stamp, philo) == 0)
 			run(&times, time_stamp, &start, philo);
-	}
-	if (times == 0)
-	{
-		philo->data->time[philo->id - 1].id *= -1;
-		philo->data->waiter--;
+		if (times == 0)
+		{
+			philo->data->time[philo->id - 1].id *= -1;
+			philo->data->waiter--;
+			times--;
+		}
 	}
 	return (NULL);
 }
