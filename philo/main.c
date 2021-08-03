@@ -52,6 +52,11 @@ int	main(int argc, char *argv[])
 	if (argc != 5 && argc != 6)
 		return (ph_error("Nº argumentos incorrecto"));
 	if (store_data(&data, argv) != 0)
-		return (ph_error("Argumentos no válidos"));
+		return (ph_error("Argumentos no validos"));
+	if (data.philo == 0)
+	{
+		printf("\033[33m0 Filosofos = No se come :)\033[39m\n");
+		return (0);
+	}
 	return (create_philo(&data));
 }

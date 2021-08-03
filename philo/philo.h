@@ -33,7 +33,6 @@ typedef struct s_time {
 }	t_time;
 
 typedef struct s_data {
-	int				id;
 	int				philo;
 	int				death;
 	int				eat;

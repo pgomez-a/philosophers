@@ -1,10 +1,10 @@
 NAME	= philo
 
-SRCS	= srcs/main.c		\
-	  srcs/philo.c		\
-	  srcs/init_philo.c	\
-	  srcs/action_philo.c	\
-	  srcs/ph_utils.c
+SRCS	= main.c		\
+	  philo.c		\
+	  init_philo.c		\
+	  action_philo.c	\
+	  ph_utils.c
 
 OBJS	= ${SRCS:.c=.o}
 
