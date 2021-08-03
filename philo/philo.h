@@ -40,6 +40,7 @@ typedef struct s_data {
 	int				times;
 	int				waiter;
 	pthread_mutex_t	mutex;
+	pthread_mutex_t	print_mut;
 	t_time			*time;
 	t_fork			*fork;
 }	t_data;

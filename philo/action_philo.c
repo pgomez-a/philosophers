@@ -21,10 +21,12 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 {
 	struct timeval	gettime;
 	double			time_stamp;
+	int			unlock;
 
 	gettimeofday(&gettime, NULL);
 	time_stamp = ((double)gettime.tv_sec * 1000)
 		+ ((double)gettime.tv_usec / 1000);
+	unlock = 0;
 	if (philo->data->waiter != 1)
 	{
 		if (ph_strcmp("is eating", action) == 1)
@@ -33,9 +35,13 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 		else
 			printf("%ld %d %s\n",
 				(long)(time_stamp - tstamp), philo->id, action);
-		if (time >= 0)
+		pthread_mutex_unlock(&(philo->data->print_mut));
+		unlock = 1;
+		if (philo->data->waiter != 1 && time >= 0)
 			ph_sleep(time);
 	}
+	if (unlock == 0)
+		pthread_mutex_unlock(&(philo->data->print_mut));
 }
 
 /**
@@ -57,6 +63,7 @@ int	check_if_open(t_philo *philo)
 
 static int	manage_philo_death(int mode, int count, double nd, t_data *waiter)
 {
+	pthread_mutex_lock(&(waiter->print_mut));
 	if (mode == 1)
 	{
 		waiter->waiter = 1;
@@ -70,7 +77,9 @@ static int	manage_philo_death(int mode, int count, double nd, t_data *waiter)
 		pthread_mutex_destroy(&(waiter->fork[count].mutex));
 		count++;
 	}
+	pthread_mutex_unlock(&(waiter->print_mut));
 	pthread_mutex_unlock(&(waiter->mutex));
+	pthread_mutex_destroy(&(waiter->print_mut));
 	pthread_mutex_destroy(&(waiter->mutex));
 	if (mode == 1)
 		return (1);
