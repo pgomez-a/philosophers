@@ -131,5 +131,6 @@ int	create_philo(t_data *data)
 		pthread_detach(thread[count]);
 		count++;
 	}
-	return (waiter(data));
+	waiter(data);
+	return (ph_free_error(&fork, &philo, &time, &thread));
 }

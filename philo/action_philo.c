@@ -21,7 +21,7 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 {
 	struct timeval	gettime;
 	double			time_stamp;
-	int			unlock;
+	int				unlock;
 
 	pthread_mutex_lock(&(philo->data->print_mut));
 	gettimeofday(&gettime, NULL);
