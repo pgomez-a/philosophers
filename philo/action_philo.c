@@ -65,9 +65,9 @@ int	check_if_open(t_philo *philo)
 static int	manage_philo_death(int mode, int count, double nd, t_data *waiter)
 {
 	pthread_mutex_lock(&(waiter->print_mut));
+	waiter->waiter = 1;
 	if (mode == 1)
 	{
-		waiter->waiter = 1;
 		printf("\033[31m%ld %d is died\033[39m\n",
 			(long)(nd - waiter->time[count].tstamp), count + 1);
 	}
@@ -82,6 +82,7 @@ static int	manage_philo_death(int mode, int count, double nd, t_data *waiter)
 	pthread_mutex_unlock(&(waiter->mutex));
 	pthread_mutex_destroy(&(waiter->print_mut));
 	pthread_mutex_destroy(&(waiter->mutex));
+	ph_sleep(2);
 	if (mode == 1)
 		return (1);
 	return (0);
