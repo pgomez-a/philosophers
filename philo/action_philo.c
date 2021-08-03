@@ -23,6 +23,7 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
 	double			time_stamp;
 	int			unlock;
 
+	pthread_mutex_lock(&(philo->data->print_mut));
 	gettimeofday(&gettime, NULL);
 	time_stamp = ((double)gettime.tv_sec * 1000)
 		+ ((double)gettime.tv_usec / 1000);
@@ -71,13 +72,13 @@ static int	manage_philo_death(int mode, int count, double nd, t_data *waiter)
 			(long)(nd - waiter->time[count].tstamp), count + 1);
 	}
 	ph_sleep(2);
+	pthread_mutex_unlock(&(waiter->print_mut));
 	count = 0;
 	while (count < waiter->philo)
 	{
 		pthread_mutex_destroy(&(waiter->fork[count].mutex));
 		count++;
 	}
-	pthread_mutex_unlock(&(waiter->print_mut));
 	pthread_mutex_unlock(&(waiter->mutex));
 	pthread_mutex_destroy(&(waiter->print_mut));
 	pthread_mutex_destroy(&(waiter->mutex));

@@ -92,8 +92,11 @@ static void	*execute_philo(void *arg)
 		if (philo->data->philo != 1 && close_forks(time_stamp, philo) == 0)
 			run(&times, time_stamp, &start, philo);
 	}
-	philo->data->time[philo->id - 1].id *= -1;
-	philo->data->waiter--;
+	if (times == 0)
+	{
+		philo->data->time[philo->id - 1].id *= -1;
+		philo->data->waiter--;
+	}
 	return (NULL);
 }
 
