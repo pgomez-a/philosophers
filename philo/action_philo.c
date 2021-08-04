@@ -106,7 +106,7 @@ int	waiter(t_data *waiter)
 			pthread_mutex_lock(&(waiter->mutex));
 			start = waiter->time[count].time;
 			st = ((double)start.tv_sec * 1000) + ((double)start.tv_usec / 1000);
-			if (waiter->time[count].id > 0 && nd - st > waiter->death + 1)
+			if (waiter->time[count].id > 0 && (long)(nd - st) > waiter->death)
 				return (manage_philo_death(1, count, nd, waiter));
 			pthread_mutex_unlock(&(waiter->mutex));
 			if (waiter->waiter == waiter->philo * -1)

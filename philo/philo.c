@@ -60,14 +60,23 @@ static void	open_forks(t_philo *philo)
 
 static void	run(int *times, double stamp, struct timeval *start, t_philo *philo)
 {
-	gettimeofday(start, NULL);
-	philo->data->time[philo->id - 1].time = (*start);
-	pthread_mutex_unlock(&(philo->data->mutex));
-	philo_action(stamp, philo->data->eat, "is eating", philo);
-	(*times)--;
-	open_forks(philo);
-	philo_action(stamp, philo->data->sleep, "is sleeping", philo);
-	philo_action(stamp, -1, "is thinking", philo);
+	if (stamp == -1 && start == NULL)
+	{
+		philo->data->time[philo->id - 1].id *= -1;
+		philo->data->waiter--;
+		(*times)--;
+	}
+	else
+	{
+		gettimeofday(start, NULL);
+		philo->data->time[philo->id - 1].time = (*start);
+		pthread_mutex_unlock(&(philo->data->mutex));
+		philo_action(stamp, philo->data->eat, "is eating", philo);
+		(*times)--;
+		open_forks(philo);
+		philo_action(stamp, philo->data->sleep, "is sleeping", philo);
+		philo_action(stamp, -1, "is thinking", philo);
+	}
 }
 
 static void	*execute_philo(void *arg)
@@ -92,11 +101,7 @@ static void	*execute_philo(void *arg)
 		if (philo->data->philo != 1 && close_forks(time_stamp, philo) == 0)
 			run(&times, time_stamp, &start, philo);
 		if (times == 0)
-		{
-			philo->data->time[philo->id - 1].id *= -1;
-			philo->data->waiter--;
-			times--;
-		}
+			run(&times, -1, NULL, philo);
 	}
 	return (NULL);
 }
