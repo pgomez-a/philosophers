@@ -68,7 +68,7 @@ static int	manage_philo_death(int mode, int count, double nd, t_data *waiter)
 	waiter->waiter = 1;
 	if (mode == 1)
 	{
-		printf("\033[31m%ld %d is died\033[39m\n",
+		printf("\033[31m%ld %d died\033[39m\n",
 			(long)(nd - waiter->time[count].tstamp), count + 1);
 	}
 	ph_sleep(2);
