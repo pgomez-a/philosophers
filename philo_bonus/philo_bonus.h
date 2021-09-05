@@ -19,14 +19,19 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <pthread.h>
+# include <semaphore.h>
+# include <signal.h>
 # include <limits.h>
 
 typedef struct s_data {
-	int				philo;
-	int				death;
-	int				eat;
-	int				sleep;
-	int				times;
+	int		philo;
+	int		death;
+	int		eat;
+	int		sleep;
+	int		times;
+	sem_t	*sem_fork;
+	sem_t	*sem_waiter;
+	sem_t	*sem_print;
 }	t_data;
 
 typedef struct s_death {
@@ -52,6 +57,8 @@ int		create_philo(t_data *data);
  **/
 
 void	philo_action(double tstamp, int time, char *action, t_philo *philo);
+int		wait_for_childs(int size, pid_t *pid_table, t_data *data);
+int		init_values(pid_t **pid, t_data *data);
 
 /**
  ** ph_utils_bonus.c
