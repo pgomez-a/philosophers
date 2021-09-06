@@ -45,19 +45,22 @@ void	philo_action(double tstamp, int time, char *action, t_philo *philo)
  ** Open a semaphore with a value of the total amount of philos
  **/
 
-int	init_values(pid_t **pid_table, t_data *data)
+int	init_values(t_data *data)
 {
-	(*pid_table) = (pid_t *)malloc(sizeof(pid_t) * data->philo);
-	if (pid_table == NULL)
+	data->pid_table = (pid_t *)malloc(sizeof(pid_t) * data->philo);
+	if (data->pid_table == NULL)
 		return (-1);
 	sem_close(data->sem_fork);
 	sem_close(data->sem_waiter);
+	sem_close(data->sem_times);
 	sem_close(data->sem_print);
 	sem_unlink("sem_philos");
 	sem_unlink("sem_waiter");
+	sem_unlink("sem_times");
 	sem_unlink("sem_stdout");
 	data->sem_fork = sem_open("sem_philos", O_CREAT, 0666, data->philo);
 	data->sem_waiter = sem_open("sem_waiter", O_CREAT, 0666, data->philo / 2);
+	data->sem_times = sem_open("sem_times", O_CREAT, 0666, 0);
 	data->sem_print = sem_open("sem_stdout", O_CREAT, 0666, 1);
 	return (0);
 }
@@ -105,16 +108,41 @@ static void	manage_waiting(int size, pid_t *pid_table,
 	}
 }
 
-int	wait_for_childs(int size, pid_t *pid_table, t_data *data)
+static void	*count_times(void *arg)
+{
+	t_data	*data;
+	int	count;
+
+	data = *(t_data **)arg;
+	count = 0;
+	while (count < data->philo)
+	{
+		sem_wait(data->sem_times);
+		count++;
+	}
+	count = 0;
+	while (count < data->philo)
+	{
+		kill(data->pid_table[count], 9);
+		count++;
+	}
+	sem_post(data->sem_times);
+	return (NULL);
+}
+
+int	wait_for_childs(int size, t_data *data)
 {
 	pthread_t	*threads;
+	pthread_t	times;
 
 	threads = (pthread_t *)malloc(sizeof(pthread_t) * data->philo);
 	if (threads == NULL)
 		return (-1);
-	manage_waiting(size, pid_table, data, threads);
+	pthread_create(&times, NULL, count_times, &data);
+	pthread_detach(times);
+	manage_waiting(size, data->pid_table, data, threads);
 	free(threads);
-	free(pid_table);
+	free(data->pid_table);
 	sem_close(data->sem_fork);
 	sem_close(data->sem_waiter);
 	sem_close(data->sem_print);

@@ -29,8 +29,10 @@ typedef struct s_data {
 	int		eat;
 	int		sleep;
 	int		times;
+	pid_t	*pid_table;
 	sem_t	*sem_fork;
 	sem_t	*sem_waiter;
+	sem_t	*sem_times;
 	sem_t	*sem_print;
 }	t_data;
 
@@ -57,8 +59,8 @@ int		create_philo(t_data *data);
  **/
 
 void	philo_action(double tstamp, int time, char *action, t_philo *philo);
-int		wait_for_childs(int size, pid_t *pid_table, t_data *data);
-int		init_values(pid_t **pid, t_data *data);
+int		wait_for_childs(int size, t_data *data);
+int		init_values(t_data *data);
 
 /**
  ** ph_utils_bonus.c

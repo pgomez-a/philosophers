@@ -51,6 +51,7 @@ static int	execute_philo(t_philo *philo)
 	double			start;
 	t_death			death;
 	pthread_t		thread;
+	int			times;
 
 	gettimeofday(&time_stamp, NULL);
 	start = ((double)time_stamp.tv_sec * 1000)
@@ -61,6 +62,7 @@ static int	execute_philo(t_philo *philo)
 	philo->death = &death;
 	pthread_create(&thread, NULL, check_if_dead, philo);
 	pthread_detach(thread);
+	times = philo->data->times;
 	while (philo->death->mode != 1)
 	{
 		sem_wait(philo->data->sem_waiter);
@@ -69,10 +71,13 @@ static int	execute_philo(t_philo *philo)
 		sem_wait(philo->data->sem_fork);
 		philo_action(start, -1, "has taken a fork", philo);
 		sem_post(philo->data->sem_waiter);
+		if (times == 0)
+			sem_post(philo->data->sem_times);
 		gettimeofday(&time_stamp, NULL);
 		philo->death->time = ((double)time_stamp.tv_sec * 1000)
 			+ ((double)time_stamp.tv_usec / 1000);
 		philo_action(start, philo->data->eat, "is eating", philo);
+		times--;
 		sem_post(philo->data->sem_fork);
 		sem_post(philo->data->sem_fork);
 		philo_action(start, philo->data->sleep, "is sleeping", philo);
@@ -88,19 +93,18 @@ static int	execute_philo(t_philo *philo)
 int	create_philo(t_data *data)
 {
 	t_philo	philo;
-	pid_t	*pid_table;
 	pid_t	pid;
 	int		count;
 
 	count = 0;
 	pid = 1;
-	if (init_values(&pid_table, data) == -1)
+	if (init_values(data) == -1)
 		return (-1);
 	while (count < data->philo && pid > 0)
 	{
 		pid = fork();
 		if (pid > 0)
-			pid_table[count++] = pid;
+			data->pid_table[count++] = pid;
 		else if (pid == 0)
 		{
 			philo.id = count + 1;
@@ -111,5 +115,5 @@ int	create_philo(t_data *data)
 	}
 	if (pid == 0)
 		return (execute_philo(&philo));
-	return (wait_for_childs(data->philo, pid_table, data));
+	return (wait_for_childs(data->philo, data));
 }
