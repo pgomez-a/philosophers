@@ -49,17 +49,22 @@ typedef struct s_philo {
 }	t_philo;
 
 /**
- ** philo_bonus.c
+ ** execute_philos_bonus.c
  **/
 
-int		create_philo(t_data *data);
+int		execute_philo(t_philo *philo);
+
+/**
+ ** wait_philos_bonus.c
+ **/
+
+int		wait_for_childs(int size, t_data *data);
 
 /**
  ** action_philo_bonus.c
  **/
 
 void	philo_action(double tstamp, int time, char *action, t_philo *philo);
-int		wait_for_childs(int size, t_data *data);
 int		init_values(t_data *data);
 
 /**

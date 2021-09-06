@@ -40,6 +40,38 @@ static int	store_data(t_data *data, char *argv[])
 }
 
 /**
+ ** Create philos giving them an id
+ **/
+
+static int	create_philo(t_data *data)
+{
+	t_philo	philo;
+	pid_t	pid;
+	int		count;
+
+	count = 0;
+	pid = 1;
+	if (init_values(data) == -1)
+		return (-1);
+	while (count < data->philo && pid > 0)
+	{
+		pid = fork();
+		if (pid > 0)
+			data->pid_table[count++] = pid;
+		else if (pid == 0)
+		{
+			philo.id = count + 1;
+			philo.data = data;
+		}
+		else
+			return (ph_error("Creación proceso fallida\n"));
+	}
+	if (pid == 0)
+		return (execute_philo(&philo));
+	return (wait_for_childs(data->philo, data));
+}
+
+/**
  ** Main function -> Philosophers
  **/
 

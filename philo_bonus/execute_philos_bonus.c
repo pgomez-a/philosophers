@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_bonus.c                                      :+:      :+:    :+:   */
+/*   execute_philos_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/03 13:29:09 by pablo             #+#    #+#             */
-/*   Updated: 2021/09/03 13:29:37 by pablo            ###   ########.fr       */
+/*   Updated: 2021/09/06 15:26:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,42 @@ static void	*check_if_dead(void *arg)
 }
 
 /**
- ** Once a philo is created, it starts eating, sleeping and thinking
+ ** Take two forks before start eating
  **/
 
-static int	execute_philo(t_philo *philo)
+static void	take_forks(double start, t_philo *philo)
+{
+	sem_wait(philo->data->sem_waiter);
+	sem_wait(philo->data->sem_fork);
+	philo_action(start, -1, "has taken a fork", philo);
+	sem_wait(philo->data->sem_fork);
+	philo_action(start, -1, "has taken a fork", philo);
+	sem_post(philo->data->sem_waiter);
+}
+
+static void	eat_sleep_wait(double start, struct timeval *time_stamp,
+		t_philo *philo)
+{
+	gettimeofday(time_stamp, NULL);
+	philo->death->time = ((double)time_stamp->tv_sec * 1000)
+		+ ((double)time_stamp->tv_usec / 1000);
+	philo_action(start, philo->data->eat, "is eating", philo);
+	sem_post(philo->data->sem_fork);
+	sem_post(philo->data->sem_fork);
+	philo_action(start, philo->data->sleep, "is sleeping", philo);
+	philo_action(start, -1, "is thinking", philo);
+}
+
+/**
+ ** Once a philo is created, it starts eating, sleeping and thinking
+ **/
+int	execute_philo(t_philo *philo)
 {
 	struct timeval	time_stamp;
 	double			start;
 	t_death			death;
 	pthread_t		thread;
-	int			times;
+	int				times;
 
 	gettimeofday(&time_stamp, NULL);
 	start = ((double)time_stamp.tv_sec * 1000)
@@ -65,55 +91,11 @@ static int	execute_philo(t_philo *philo)
 	times = philo->data->times;
 	while (philo->death->mode != 1)
 	{
-		sem_wait(philo->data->sem_waiter);
-		sem_wait(philo->data->sem_fork);
-		philo_action(start, -1, "has taken a fork", philo);
-		sem_wait(philo->data->sem_fork);
-		philo_action(start, -1, "has taken a fork", philo);
-		sem_post(philo->data->sem_waiter);
+		take_forks(start, philo);
 		if (times == 0)
 			sem_post(philo->data->sem_times);
-		gettimeofday(&time_stamp, NULL);
-		philo->death->time = ((double)time_stamp.tv_sec * 1000)
-			+ ((double)time_stamp.tv_usec / 1000);
-		philo_action(start, philo->data->eat, "is eating", philo);
+		eat_sleep_wait(start, &time_stamp, philo);
 		times--;
-		sem_post(philo->data->sem_fork);
-		sem_post(philo->data->sem_fork);
-		philo_action(start, philo->data->sleep, "is sleeping", philo);
-		philo_action(start, -1, "is thinking", philo);
 	}
 	return (1);
-}
-
-/**
- ** Create philos giving them an id
- **/
-
-int	create_philo(t_data *data)
-{
-	t_philo	philo;
-	pid_t	pid;
-	int		count;
-
-	count = 0;
-	pid = 1;
-	if (init_values(data) == -1)
-		return (-1);
-	while (count < data->philo && pid > 0)
-	{
-		pid = fork();
-		if (pid > 0)
-			data->pid_table[count++] = pid;
-		else if (pid == 0)
-		{
-			philo.id = count + 1;
-			philo.data = data;
-		}
-		else
-			return (ph_error("Creación proceso fallida\n"));
-	}
-	if (pid == 0)
-		return (execute_philo(&philo));
-	return (wait_for_childs(data->philo, data));
 }

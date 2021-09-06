@@ -1,8 +1,9 @@
 NAME	= philo_bonus
 
-SRCS	= main_bonus.c		\
-	  philo_bonus.c		\
-	  action_philo_bonus.c	\
+SRCS	= main_bonus.c			\
+	  execute_philos_bonus.c	\
+	  wait_philos_bonus.c		\
+	  action_philo_bonus.c		\
 	  ph_utils_bonus.c
 
 OBJS	= ${SRCS:.c=.o}
