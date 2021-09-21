@@ -41,4 +41,6 @@ To solve this problem **we are going to use mutex**, which allow us to:
 - **Lock a mutex** with an atomic operation to ensure that only one variable accesses a value that has been shared. In this way, only this variable could access this value until the mutex is unlocked.
 - **Unlock a mutex** to allow other processes to access the same memory address.
 
+So **what is a mutex?** Mutex comes from the term **"mutual exclusion"**. They are used in concurrent programming to avoid the access of more than one thread to a critical area simultaneously. The critical area is the code segment where I can modify a share. Most of these resources are signals, counters, queues, and data. Therefore, **a mutex allows you to synchronize the use of a shared resource between threads**.
+
 
