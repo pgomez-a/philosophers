@@ -32,4 +32,13 @@ Imagine that the same data is modified by several threads at the same time. This
 To solve this, we will learn how to use mutex.
 ```
 
+### Mutex
+Once we know what a thread is and how threads can help us perform different tasks at the same time, we have to realize that conflicts can sometimes arise when accessing shared data. Here, we have some of the downsides to using threads:
+- To return the result of a thread's execution, the thread must be stopped.
+- There is no way to share data so that the reading or writing of it is done safely.
+
+To solve this problem **we are going to use mutex**, which allow us to:
+- **Lock a mutex** with an atomic operation to ensure that only one variable accesses a value that has been shared. In this way, only this variable could access this value until the mutex is unlocked.
+- **Unlock a mutex** to allow other processes to access the same memory address.
+
 
