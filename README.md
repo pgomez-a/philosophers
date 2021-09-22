@@ -1,5 +1,7 @@
 # philosophers
 
+<img width="1335" alt="Graded by peers" src="https://user-images.githubusercontent.com/74931024/134396420-70e44ff5-397f-4801-b225-ee05594e7e2c.png">
+
 **If you want to learn more about IT topics, visit my website:** [**IA Notes**](https://ia-notes.com/)
 
 Along with the processes, another important part of the optimization of a program resides in the **use of threads**. With this project, we are going to learn what a thread is, how to use threads to that our program can run faster and how to lock shared resources with a mutex. With this project, the C branch of 42 will be seen and completed.
@@ -49,6 +51,7 @@ Apart from the mutex, we can control access to a share by using semaphores. A se
 We can differentiate two different types of semaphores:
 - **Non-named semaphores:** they allow us to synchronize related processes that inherit the semaphore through the fork () call.
 - **Named semaphores:** a semaphore has an associated name that will be used to sync processes.
+<img align="right" width="513" alt="Philo execution" src="https://user-images.githubusercontent.com/74931024/134395651-e68f7e20-f5ec-4e48-9f33-c673151faaaa.png">
 
 The different functions that can be used with semaphores are:
 - **sem_init()**
