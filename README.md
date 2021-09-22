@@ -43,4 +43,18 @@ To solve this problem **we are going to use mutex**, which allow us to:
 
 So **what is a mutex?** Mutex comes from the term **"mutual exclusion"**. They are used in concurrent programming to avoid the access of more than one thread to a critical area simultaneously. The critical area is the code segment where I can modify a share. Most of these resources are signals, counters, queues, and data. Therefore, **a mutex allows you to synchronize the use of a shared resource between threads**.
 
+### Semaphores
+Apart from the mutex, we can control access to a share by using semaphores. A semaphore is a structure that allows us to synchronize threads and processes of our program. **They are based on the use of a counter, with an operator increment function and an operator decrement function**. Access control is determined by the value of that counter. If the counter value is negative, the thread will wait until the counter is positive. Immediately after a thread or process detects that the counter is no longer negative, it will automatically start executing.<br>
+<br>
+We can differentiate two different types of semaphores:
+- **Non-named semaphores:** they allow us to synchronize related processes that inherit the semaphore through the fork () call.
+- **Named semaphores:** a semaphore has an associated name that will be used to sync processes.
 
+The different functions that can be used with semaphores are:
+- **sem_init()**
+- **sem_destroy()**
+- **sem_open()**
+- **sem_close()**
+- **sem_unlink()**
+- **sem_wait()**
+- **sem_post()**
