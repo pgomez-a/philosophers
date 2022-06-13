@@ -2,7 +2,7 @@
 
 <img width="1335" alt="Graded by peers" src="https://user-images.githubusercontent.com/74931024/134396420-70e44ff5-397f-4801-b225-ee05594e7e2c.png">
 
-**If you want to learn more about IT topics, visit my website:** [**IA Notes**](https://ia-notes.com/)
+**If you want to learn more about IT topics, [I invite you to join my Patreon channel](https://www.patreon.com/pgomeza) and visit my website:** [**IA Notes**](https://ia-notes.com/)
 
 Along with the processes, another important part of the optimization of a program resides in the **use of threads**. With this project, we are going to learn what a thread is, how to use threads to that our program can run faster and how to lock shared resources with a mutex. With this project, the C branch of 42 will be seen and completed.
 
